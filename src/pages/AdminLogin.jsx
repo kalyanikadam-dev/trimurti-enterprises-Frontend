@@ -47,7 +47,7 @@ export default function AdminLogin() {
                             <Input
                                 value={username}
                                 onChange={(e) => setUsername(e.target.value)}
-                                placeholder="AshindeBmt"
+                                placeholder="username"
                                 className="h-12"
                                 required
                             />
@@ -60,7 +60,7 @@ export default function AdminLogin() {
                                 type="password"
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
-                                placeholder="bmtAkshay154"
+                                placeholder="password"
                                 className="h-12"
                                 required
                             />
