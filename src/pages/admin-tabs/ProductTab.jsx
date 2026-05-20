@@ -9,10 +9,31 @@ import { RefreshCw } from 'lucide-react';
 export default function ProductTab() {
     const [products, setProducts] = useState([]);
     const [loading, setLoading] = useState(false);
-    const [productForm, setProductForm] = useState({ name: '', description: '', price: '', category: 'bottle', images: '' });
+    const [productForm, setProductForm] = useState({ name: '', description: '', price: '', category: 'bottle', images: [] });
     const [formLoading, setFormLoading] = useState(false);
     const [editingProductId, setEditingProductId] = useState(null);
     const [deletingProductId, setDeletingProductId] = useState(null);
+
+    const handleImageUpload = (e) => {
+        const files = Array.from(e.target.files);
+        const promises = files.map((file) => {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = () => resolve(reader.result);
+                reader.onerror = (error) => reject(error);
+            });
+        });
+        Promise.all(promises).then((base64Files) => {
+            setProductForm({ ...productForm, images: [...(productForm.images || []), ...base64Files] });
+        });
+    };
+
+    const removeImage = (index) => {
+        const newImages = [...productForm.images];
+        newImages.splice(index, 1);
+        setProductForm({ ...productForm, images: newImages });
+    };
 
     useEffect(() => { loadData(); }, []);
 
@@ -32,15 +53,15 @@ export default function ProductTab() {
             const data = {
                 ...productForm,
                 price: Number(productForm.price),
-                images: productForm.images.split(',').map((url) => url.trim()).filter(Boolean),
+                images: productForm.images,
             };
             if (editingProductId) {
                 await updateProduct(editingProductId, data);
                 setEditingProductId(null);
             } else { await createProduct(data); }
-            setProductForm({ name: '', description: '', price: '', category: 'bottle', images: '' });
+            setProductForm({ name: '', description: '', price: '', category: 'bottle', images: [] });
             loadData();
-        } catch (error) { alert('Error saving product'); } 
+        } catch (error) { alert('Error saving product'); }
         finally { setFormLoading(false); }
     };
 
@@ -78,8 +99,18 @@ export default function ProductTab() {
                         </div>
                     </div>
                     <div>
-                        <label className="block text-sm font-medium mb-1">Image URLs</label>
-                        <textarea value={productForm.images} onChange={(e) => setProductForm({ ...productForm, images: e.target.value })} rows={2} className="w-full p-3 border rounded-md" />
+                        <label className="block text-sm font-medium mb-1">Product Images</label>
+                        <Input type="file" accept="image/*" multiple onChange={handleImageUpload} className="mb-2" />
+                        {productForm.images && productForm.images.length > 0 && (
+                            <div className="flex flex-wrap gap-2 mt-2">
+                                {productForm.images.map((img, idx) => (
+                                    <div key={idx} className="relative">
+                                        <img src={img} alt="preview" className="w-16 h-16 object-cover rounded" />
+                                        <button type="button" onClick={() => removeImage(idx)} className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs">x</button>
+                                    </div>
+                                ))}
+                            </div>
+                        )}
                     </div>
                     <Button type="submit" className="w-full" disabled={formLoading}>
                         {formLoading ? (editingProductId ? 'Updating...' : 'Adding...') : (editingProductId ? 'Update Product' : 'Add Product')}
@@ -87,7 +118,7 @@ export default function ProductTab() {
                     {editingProductId && (
                         <Button type="button" variant="outline" className="w-full" onClick={() => {
                             setEditingProductId(null);
-                            setProductForm({ name: '', description: '', price: '', category: 'bottle', images: '' });
+                            setProductForm({ name: '', description: '', price: '', category: 'bottle', images: [] });
                         }}>Cancel Edit</Button>
                     )}
                 </form>
@@ -106,7 +137,7 @@ export default function ProductTab() {
                                 <div className="flex gap-2 mt-3">
                                     <Button size="sm" onClick={() => {
                                         setEditingProductId(product._id);
-                                        setProductForm({ name: product.name, description: product.description, price: product.price, category: product.category, images: product.images?.join(', ') || '' });
+                                        setProductForm({ name: product.name, description: product.description, price: product.price, category: product.category, images: product.images || [] });
                                     }}>Edit</Button>
                                     <Button size="sm" variant="destructive" onClick={async () => {
                                         if (!confirm('Delete product?')) return;

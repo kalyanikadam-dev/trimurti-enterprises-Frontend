@@ -40,7 +40,7 @@ export default function ProductDetail() {
                 </div>
                 <p className="text-lg mb-8 text-gray-700">{product.description}</p>
                 <div className="flex gap-4">
-                    <button 
+                    <button
                         onClick={() => {
                             addToCart(product)
                             navigate('/checkout')
@@ -49,7 +49,7 @@ export default function ProductDetail() {
                     >
                         Buy Now
                     </button>
-                    <button 
+                    <button
                         onClick={() => {
                             addToCart(product)
                             alert('Added to cart!')
