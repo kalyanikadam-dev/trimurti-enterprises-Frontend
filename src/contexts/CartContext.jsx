@@ -14,16 +14,16 @@ export function CartProvider({ children }) {
 
     const addToCart = (product, quantity = 1) => {
         setCart((prev) => {
-            const existing = prev.find(item => item.productId === product._id);
+            const existing = prev.find(item => item.productId === product.id);
             if (existing) {
                 return prev.map(item =>
-                    item.productId === product._id
+                    item.productId === product.id
                         ? { ...item, quantity: item.quantity + quantity }
                         : item
                 );
             }
             return [...prev, {
-                productId: product._id,
+                productId: product.id,
                 name: product.name,
                 price: product.price,
                 quantity

@@ -13,7 +13,7 @@ export default function Products() {
             try {
                 const response = await getProducts();
                 setProducts(response.data.map(p => ({
-                    id: p._id,
+                    id: p.id,
                     name: p.name,
                     price: `₹${p.price}`,
                     capacity: 'Varies',

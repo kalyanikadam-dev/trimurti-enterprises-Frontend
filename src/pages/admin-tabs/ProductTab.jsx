@@ -126,7 +126,7 @@ export default function ProductTab() {
                 {loading ? <p>Loading...</p> : products.length === 0 ? <p className="text-center py-12">No products.</p> : (
                     <div className="space-y-3">
                         {products.map((product) => (
-                            <div key={product._id} className="border rounded-lg p-4 hover:shadow-md">
+                            <div key={product.id} className="border rounded-lg p-4 hover:shadow-md">
                                 <div className="flex justify-between items-start mb-2">
                                     <h3 className="font-semibold">{product.name}</h3>
                                     <Badge>${product.price}</Badge>
@@ -136,16 +136,16 @@ export default function ProductTab() {
                                 {product.images?.[0] && <img src={product.images[0]} alt={product.name} className="w-20 h-20 object-cover rounded mt-2" />}
                                 <div className="flex gap-2 mt-3">
                                     <Button size="sm" onClick={() => {
-                                        setEditingProductId(product._id);
+                                        setEditingProductId(product.id);
                                         setProductForm({ name: product.name, description: product.description, price: product.price, category: product.category, images: product.images || [] });
                                     }}>Edit</Button>
                                     <Button size="sm" variant="destructive" onClick={async () => {
                                         if (!confirm('Delete product?')) return;
-                                        setDeletingProductId(product._id);
-                                        await deleteProduct(product._id);
+                                        setDeletingProductId(product.id);
+                                        await deleteProduct(product.id);
                                         loadData();
                                         setDeletingProductId(null);
-                                    }} disabled={deletingProductId === product._id}>Delete</Button>
+                                    }} disabled={deletingProductId === product.id}>Delete</Button>
                                 </div>
                             </div>
                         ))}

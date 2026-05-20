@@ -97,7 +97,7 @@ export default function CheckoutTab() {
                 ) : (
                     <div className="space-y-4">
                         {orders.map((order) => (
-                            <div key={order._id} className="border border-gray-200 rounded-xl p-6 bg-white shadow-sm hover:shadow-md transition-shadow">
+                            <div key={order.id} className="border border-gray-200 rounded-xl p-6 bg-white shadow-sm hover:shadow-md transition-shadow">
                                 <div className="flex flex-col md:flex-row justify-between md:items-start mb-4 gap-4">
                                     <div>
                                         <div className="flex items-center gap-3 mb-1">
@@ -154,8 +154,8 @@ export default function CheckoutTab() {
                                     {order.orderStatus === 'processing' && (
                                         <Button 
                                             size="sm" 
-                                            onClick={() => handleUpdateStatus(order._id, 'shipped', order.paymentStatus)} 
-                                            disabled={actionLoadingId === order._id}
+                                            onClick={() => handleUpdateStatus(order.id, 'shipped', order.paymentStatus)} 
+                                            disabled={actionLoadingId === order.id}
                                             className="bg-blue-600 hover:bg-blue-700"
                                         >
                                             <Truck className="w-4 h-4 mr-2" /> Mark Shipped
@@ -164,8 +164,8 @@ export default function CheckoutTab() {
                                     {order.orderStatus === 'shipped' && (
                                         <Button 
                                             size="sm" 
-                                            onClick={() => handleUpdateStatus(order._id, 'delivered', 'completed')} 
-                                            disabled={actionLoadingId === order._id}
+                                            onClick={() => handleUpdateStatus(order.id, 'delivered', 'completed')} 
+                                            disabled={actionLoadingId === order.id}
                                             className="bg-green-600 hover:bg-green-700"
                                         >
                                             <CheckCircle className="w-4 h-4 mr-2" /> Mark Delivered
@@ -175,8 +175,8 @@ export default function CheckoutTab() {
                                         <Button 
                                             size="sm" 
                                             variant="outline" 
-                                            onClick={() => handleUpdateStatus(order._id, 'cancelled', order.paymentStatus)} 
-                                            disabled={actionLoadingId === order._id}
+                                            onClick={() => handleUpdateStatus(order.id, 'cancelled', order.paymentStatus)} 
+                                            disabled={actionLoadingId === order.id}
                                             className="text-red-600 hover:text-red-700 hover:bg-red-50"
                                         >
                                             <XCircle className="w-4 h-4 mr-2" /> Cancel Order
@@ -186,8 +186,8 @@ export default function CheckoutTab() {
                                     <Button 
                                         size="sm" 
                                         variant="ghost" 
-                                        onClick={() => handleDeleteOrder(order._id)} 
-                                        disabled={actionLoadingId === order._id}
+                                        onClick={() => handleDeleteOrder(order.id)} 
+                                        disabled={actionLoadingId === order.id}
                                         className="text-gray-500 hover:text-red-600 hover:bg-red-50"
                                     >
                                         Delete Record

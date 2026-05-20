@@ -34,13 +34,13 @@ export default function InquiryTab() {
                     <CardHeader><CardTitle>Quotes ({quotes.length})</CardTitle></CardHeader>
                     <CardContent className="space-y-4">
                         {quotes.map((q) => (
-                            <div key={q._id} className="border rounded-lg p-4">
+                            <div key={q.id} className="border rounded-lg p-4">
                                 <div className="flex justify-between"><h3 className="font-semibold">{q.name}</h3><Badge>{q.verified ? 'Verified' : 'Pending'}</Badge></div>
                                 <p className="text-sm">{q.email} | {q.phone}</p>
                                 <p className="text-xs bg-muted p-2 mt-2">{q.message}</p>
                                 <div className="flex gap-2 mt-2">
-                                    <Button size="sm" onClick={() => actionWrapper(() => updateQuoteStatus(q._id, 'confirmed'))}>Confirm</Button>
-                                    <Button size="sm" variant="destructive" onClick={() => { if(confirm('Delete?')) actionWrapper(() => deleteQuote(q._id))}}>Delete</Button>
+                                    <Button size="sm" onClick={() => actionWrapper(() => updateQuoteStatus(q.id, 'confirmed'))}>Confirm</Button>
+                                    <Button size="sm" variant="destructive" onClick={() => { if(confirm('Delete?')) actionWrapper(() => deleteQuote(q.id))}}>Delete</Button>
                                 </div>
                             </div>
                         ))}
@@ -51,13 +51,13 @@ export default function InquiryTab() {
                     <CardHeader><CardTitle>Contacts ({contacts.length})</CardTitle></CardHeader>
                     <CardContent className="space-y-4">
                         {contacts.map((c) => (
-                            <div key={c._id} className="border rounded-lg p-4">
+                            <div key={c.id} className="border rounded-lg p-4">
                                 <div className="flex justify-between"><h3 className="font-semibold">{c.name}</h3><Badge>{c.verified ? 'Verified' : 'Pending'}</Badge></div>
                                 <p className="text-sm">{c.email} | {c.phone}</p>
                                 <p className="text-xs bg-muted p-2 mt-2">{c.subject}: {c.message}</p>
                                 <div className="flex gap-2 mt-2">
-                                    <Button size="sm" onClick={() => actionWrapper(() => updateContact(c._id, { verified: true }))}>Verify</Button>
-                                    <Button size="sm" variant="destructive" onClick={() => { if(confirm('Delete?')) actionWrapper(() => deleteContact(c._id))}}>Delete</Button>
+                                    <Button size="sm" onClick={() => actionWrapper(() => updateContact(c.id, { verified: true }))}>Verify</Button>
+                                    <Button size="sm" variant="destructive" onClick={() => { if(confirm('Delete?')) actionWrapper(() => deleteContact(c.id))}}>Delete</Button>
                                 </div>
                             </div>
                         ))}
