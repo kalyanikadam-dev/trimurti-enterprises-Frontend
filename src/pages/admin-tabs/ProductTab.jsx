@@ -90,7 +90,7 @@ export default function ProductTab() {
                     </div>
                     <div className="grid grid-cols-2 gap-4">
                         <div>
-                            <label className="block text-sm font-medium mb-1">Price ($)</label>
+                            <label className="block text-sm font-medium mb-1">Price (₹)</label>
                             <Input type="number" value={productForm.price} onChange={(e) => setProductForm({ ...productForm, price: e.target.value })} required />
                         </div>
                         <div>
@@ -129,7 +129,7 @@ export default function ProductTab() {
                             <div key={product.id} className="border rounded-lg p-4 hover:shadow-md">
                                 <div className="flex justify-between items-start mb-2">
                                     <h3 className="font-semibold">{product.name}</h3>
-                                    <Badge>${product.price}</Badge>
+                                    <Badge>₹{product.price}</Badge>
                                 </div>
                                 <p className="text-sm text-muted-foreground mb-2">{product.description?.substring(0, 100)}...</p>
                                 <Badge variant="outline">{product.category}</Badge>
