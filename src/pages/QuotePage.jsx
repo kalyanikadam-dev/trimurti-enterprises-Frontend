@@ -20,6 +20,7 @@ export default function QuotePage() {
     const [selectedMaterials, setSelectedMaterials] = useState([]);
 
     const [otp, setOtp] = useState("");
+    const [fallbackOtp, setFallbackOtp] = useState("");
     const [otpError, setOtpError] = useState("");
 
     const toggleMaterial = (item) => {
@@ -62,6 +63,12 @@ export default function QuotePage() {
             });
             if (response?.data?.quoteId) {
                 setQuoteId(response.data.quoteId.toString());
+                if (response.data.otpSent === false && response.data.otp) {
+                    setFallbackOtp(response.data.otp);
+                    console.warn("⚠️ SMTP service failed. Using fallback OTP:", response.data.otp);
+                } else {
+                    setFallbackOtp("");
+                }
                 console.log("OTP sent to email!", response.data.quoteId);
                 setStep(4);
             } else {
@@ -422,6 +429,13 @@ export default function QuotePage() {
                                 <p className="text-xs text-gray-400 text-center">
                                     Check your email for real OTP!
                                 </p>
+
+                                {fallbackOtp && (
+                                    <div className="mt-4 p-3 bg-amber-50 border border-amber-200 rounded text-center text-xs text-amber-800">
+                                        <strong>Development/SMTP Fallback:</strong><br />
+                                        Email service failed. Enter OTP: <span className="font-mono font-bold text-sm bg-amber-100 px-2 py-0.5 rounded">{fallbackOtp}</span>
+                                    </div>
+                                )}
 
                             </div>
 
