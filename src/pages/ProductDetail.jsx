@@ -30,7 +30,7 @@ export default function ProductDetail() {
         <div className="py-20 px-4">
             <div className="max-w-4xl mx-auto">
                 <h1 className="text-4xl font-bold mb-4">{product.name}</h1>
-                <p className="text-2xl font-semibold text-orange-600 mb-8">₹{product.price}</p>
+                <p className="text-2xl font-semibold text-orange-600 mb-8">${product.price}</p>
                 <div className="bg-gradient-to-br from-primary/20 aspect-square rounded-lg flex items-center justify-center text-8xl mb-8 overflow-hidden">
                     {product.images && product.images[0] ? (
                         <img src={product.images[0]} alt={product.name} className="w-full h-full object-cover" />

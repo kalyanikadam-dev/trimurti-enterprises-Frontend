@@ -20,8 +20,9 @@ export default function QuotePage() {
     const [selectedMaterials, setSelectedMaterials] = useState([]);
 
     const [otp, setOtp] = useState("");
-    const [fallbackOtp, setFallbackOtp] = useState("");
     const [otpError, setOtpError] = useState("");
+    const [otpSent, setOtpSent] = useState(true);
+    const [otpFallback, setOtpFallback] = useState("");
 
     const toggleMaterial = (item) => {
         if (selectedMaterials.includes(item)) {
@@ -63,13 +64,15 @@ export default function QuotePage() {
             });
             if (response?.data?.quoteId) {
                 setQuoteId(response.data.quoteId.toString());
-                if (response.data.otpSent === false && response.data.otp) {
-                    setFallbackOtp(response.data.otp);
-                    console.warn("⚠️ SMTP service failed. Using fallback OTP:", response.data.otp);
+                const sent = response.data.otpSent !== false;
+                setOtpSent(sent);
+                if (!sent && response.data.otp) {
+                    setOtpFallback(response.data.otp.toString());
+                    console.log("Using OTP Fallback:", response.data.otp);
                 } else {
-                    setFallbackOtp("");
+                    setOtpFallback("");
+                    console.log("OTP sent to email!", response.data.quoteId);
                 }
-                console.log("OTP sent to email!", response.data.quoteId);
                 setStep(4);
             } else {
                 console.error('No quoteId in response', response);
@@ -400,7 +403,7 @@ export default function QuotePage() {
                             </h2>
 
                             <p className="text-sm text-muted-foreground mb-4 text-center">
-                                OTP sent to +91 *****{mobile.slice(-4)}
+                                {otpSent ? `OTP sent to +91 *****${mobile.slice(-4)}` : "Email delivery failed, using OTP fallback"}
                             </p>
 
                             <div className="space-y-5">
@@ -426,16 +429,15 @@ export default function QuotePage() {
                                     )}
                                 </div>
 
-                                <p className="text-xs text-gray-400 text-center">
-                                    Check your email for real OTP!
+                                <p className="text-xs text-center font-medium">
+                                    {otpSent ? (
+                                        <span className="text-gray-400">Check your email for real OTP!</span>
+                                    ) : (
+                                        <span className="text-amber-600 bg-amber-50 px-3 py-1.5 rounded-md border border-amber-200 inline-block">
+                                            Your OTP is: <strong className="text-base tracking-widest">{otpFallback}</strong>
+                                        </span>
+                                    )}
                                 </p>
-
-                                {fallbackOtp && (
-                                    <div className="mt-4 p-3 bg-amber-50 border border-amber-200 rounded text-center text-xs text-amber-800">
-                                        <strong>Development/SMTP Fallback:</strong><br />
-                                        Email service failed. Enter OTP: <span className="font-mono font-bold text-sm bg-amber-100 px-2 py-0.5 rounded">{fallbackOtp}</span>
-                                    </div>
-                                )}
 
                             </div>
 

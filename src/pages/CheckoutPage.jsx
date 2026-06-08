@@ -67,7 +67,7 @@ export default function CheckoutPage() {
                                 <div key={item.productId} className="flex justify-between items-center border-b pb-4">
                                     <div>
                                         <h3 className="font-semibold">{item.name}</h3>
-                                        <p className="text-sm text-gray-500">₹{item.price} each</p>
+                                        <p className="text-sm text-gray-500">${item.price} each</p>
                                     </div>
                                     <div className="flex items-center gap-4">
                                         <Input 
@@ -77,7 +77,7 @@ export default function CheckoutPage() {
                                             onChange={(e) => updateQuantity(item.productId, Number(e.target.value))}
                                             className="w-20"
                                         />
-                                        <div className="font-medium">₹{(item.price * item.quantity).toFixed(2)}</div>
+                                        <div className="font-medium">${(item.price * item.quantity).toFixed(2)}</div>
                                         <Button variant="ghost" size="icon" onClick={() => removeFromCart(item.productId)}>
                                             <Trash2 className="w-4 h-4 text-red-500" />
                                         </Button>
@@ -86,7 +86,7 @@ export default function CheckoutPage() {
                             ))}
                             <div className="pt-4 flex justify-between text-xl font-bold">
                                 <span>Total:</span>
-                                <span>₹{getCartTotal().toFixed(2)}</span>
+                                <span>${getCartTotal().toFixed(2)}</span>
                             </div>
                         </CardContent>
                     </Card>

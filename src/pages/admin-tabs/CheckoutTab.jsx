@@ -116,7 +116,7 @@ export default function CheckoutTab() {
                                     </div>
                                     <div className="text-right">
                                         <div className="text-xl font-bold text-gray-900 mb-1">
-                                            ₹{order.totalAmount.toFixed(2)}
+                                            ${order.totalAmount.toFixed(2)}
                                         </div>
                                         <div className="flex items-center gap-2 justify-end">
                                             <span className="text-xs font-medium uppercase tracking-wider text-gray-500">
@@ -140,7 +140,7 @@ export default function CheckoutTab() {
                                                     </span>
                                                     <span className="text-gray-700">{item.name || 'Product'}</span>
                                                 </div>
-                                                <span className="font-medium text-gray-900">₹{(item.price * item.quantity).toFixed(2)}</span>
+                                                <span className="font-medium text-gray-900">${(item.price * item.quantity).toFixed(2)}</span>
                                             </div>
                                         ))}
                                     </div>
