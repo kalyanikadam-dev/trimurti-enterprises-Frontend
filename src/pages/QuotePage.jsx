@@ -21,6 +21,8 @@ export default function QuotePage() {
 
     const [otp, setOtp] = useState("");
     const [otpError, setOtpError] = useState("");
+    const [otpSent, setOtpSent] = useState(true);
+    const [otpFallback, setOtpFallback] = useState("");
 
     const toggleMaterial = (item) => {
         if (selectedMaterials.includes(item)) {
@@ -62,7 +64,15 @@ export default function QuotePage() {
             });
             if (response?.data?.quoteId) {
                 setQuoteId(response.data.quoteId.toString());
-                console.log("OTP sent to email!", response.data.quoteId);
+                const sent = response.data.otpSent !== false;
+                setOtpSent(sent);
+                if (!sent && response.data.otp) {
+                    setOtpFallback(response.data.otp.toString());
+                    console.log("Using OTP Fallback:", response.data.otp);
+                } else {
+                    setOtpFallback("");
+                    console.log("OTP sent to email!", response.data.quoteId);
+                }
                 setStep(4);
             } else {
                 console.error('No quoteId in response', response);
@@ -393,7 +403,7 @@ export default function QuotePage() {
                             </h2>
 
                             <p className="text-sm text-muted-foreground mb-4 text-center">
-                                OTP sent to +91 *****{mobile.slice(-4)}
+                                {otpSent ? `OTP sent to +91 *****${mobile.slice(-4)}` : "Email delivery failed, using OTP fallback"}
                             </p>
 
                             <div className="space-y-5">
@@ -419,8 +429,14 @@ export default function QuotePage() {
                                     )}
                                 </div>
 
-                                <p className="text-xs text-gray-400 text-center">
-                                    Check your email for real OTP!
+                                <p className="text-xs text-center font-medium">
+                                    {otpSent ? (
+                                        <span className="text-gray-400">Check your email for real OTP!</span>
+                                    ) : (
+                                        <span className="text-amber-600 bg-amber-50 px-3 py-1.5 rounded-md border border-amber-200 inline-block">
+                                            Your OTP is: <strong className="text-base tracking-widest">{otpFallback}</strong>
+                                        </span>
+                                    )}
                                 </p>
 
                             </div>
