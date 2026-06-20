@@ -1,12 +1,37 @@
 import { useParams } from "react-router-dom";
-import { useState } from "react";
-import { submitQuote, verifyQuote } from '@/lib/api.js';
+import { useState, useEffect } from "react";
+import { submitQuote, verifyQuote, getProductById } from '@/lib/api.js';
 
 export default function QuotePage() {
     const { id } = useParams();
     const [step, setStep] = useState(1);
 
-    const productName = `Plastic Bottle ${id === '1' ? '100ml' : id === '2' ? '60ml' : `${id * 100}ml`}`;
+    const [product, setProduct] = useState(null);
+    const [fetchingProduct, setFetchingProduct] = useState(true);
+    const [verifying, setVerifying] = useState(false);
+
+    useEffect(() => {
+        const fetchProduct = async () => {
+            try {
+                const response = await getProductById(id);
+                setProduct(response.data);
+            } catch (err) {
+                console.error("Failed to fetch product details:", err);
+            } finally {
+                setFetchingProduct(false);
+            }
+        };
+        if (id) {
+            fetchProduct();
+        }
+    }, [id]);
+
+    const fallbackName = id === '1' ? 'Plastic Bottle 100ml' : id === '2' ? 'Plastic Bottle 60ml' : 'Plastic Bottle';
+    const productName = product ? product.name : fallbackName;
+    const productPrice = product ? product.price : (id === '1' ? 5 : id === '2' ? 4 : 6);
+    const productImage = product && product.images && product.images[0]
+        ? product.images[0]
+        : (id === '1' || id === '2' ? `/produc_Image/prod${id}.jpeg` : `/produc_Image/prod1.jpeg`);
 
     // STATES
     const [name, setName] = useState("");
@@ -97,6 +122,7 @@ export default function QuotePage() {
             return;
         }
 
+        setVerifying(true);
         try {
             const response = await verifyQuote({ quoteId, otp });
             if (response?.data?.verified) {
@@ -105,7 +131,9 @@ export default function QuotePage() {
                 setOtpError(response?.data?.error || 'Invalid OTP');
             }
         } catch (error) {
-            setOtpError(error.response.data.error || 'Verification failed');
+            setOtpError(error.response?.data?.error || error.message || 'Verification failed');
+        } finally {
+            setVerifying(false);
         }
     };
 
@@ -117,13 +145,13 @@ export default function QuotePage() {
             {/* LEFT */}
             <div>
                 <img
-                    src={`/produc_Image/prod${id}.jpeg`}
+                    src={productImage}
                     alt={productName}
                     className="w-full h-96 object-cover rounded-lg shadow-lg"
                 />
                 <h2 className="text-2xl font-bold mt-6">{productName}</h2>
                 <p className="text-muted-foreground mt-2">
-                    ₹{id === '1' ? '5' : id === '2' ? '4' : '6'} / unit
+                    ₹{productPrice} / unit
                 </p>
             </div>
 
@@ -451,9 +479,17 @@ export default function QuotePage() {
 
                                 <button
                                     onClick={handleOtpVerify}
-                                    className="btn w-1/2"
+                                    className="btn w-1/2 flex items-center justify-center disabled:opacity-50"
+                                    disabled={verifying}
                                 >
-                                    Confirm Requirement
+                                    {verifying ? (
+                                        <span className="flex items-center gap-2">
+                                            <span className="animate-spin h-4 w-4 border-2 border-white border-t-transparent rounded-full"></span>
+                                            Confirming...
+                                        </span>
+                                    ) : (
+                                        "Confirm Requirement"
+                                    )}
                                 </button>
                             </div>
 
